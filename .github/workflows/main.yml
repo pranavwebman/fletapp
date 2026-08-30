@@ -23,7 +23,6 @@ jobs:
           distribution: 'zulu'
           java-version: '17'
 
-      # FIX 1: We hardcode Flutter 3.44.8 so Flet doesn't throw a version mismatch
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
@@ -35,12 +34,11 @@ jobs:
           python -m pip install --upgrade pip
           pip install flet
 
-      # FIX 2: Added '--no-interactive' so Flet never pauses to ask for console input
+      # The exact production flag (--yes) to automatically accept all requirements silently
       - name: Build APK
         run: |
-          flet build apk --no-interactive
+          flet build apk --yes --verbose
 
-      # This step remains the same to upload your final APK
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
