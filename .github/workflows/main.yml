@@ -34,13 +34,13 @@ jobs:
           python -m pip install --upgrade pip
           pip install flet
 
-      # The exact production flag (--yes) to automatically accept all requirements silently
       - name: Build APK
         run: |
           flet build apk --yes --verbose
 
+      # FIXED STEP: This tells GitHub to search EVERYTHING for the .apk file
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
           name: Flet-Android-APK
-          path: build/apk/app-release.apk
+          path: "**/outputs/**/*.apk"
