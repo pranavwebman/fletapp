@@ -1,0 +1,51 @@
+name: Build Flet Android APK
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch: # Allows you to manually click "Run" on GitHub
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Download your repository files
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # 2. Set up Python environment
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      # 3. Setup Java (Required for Android compiling)
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      # 4. Setup Flutter SDK
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+
+      # 5. Install Flet toolchain
+      - name: Install Flet
+        run: |
+          python -m pip install --upgrade pip
+          pip install flet
+
+      # 6. Run the Flet Build APK command
+      - name: Build APK
+        run: |
+          flet build apk
+
+      # 7. Upload the compiled APK so you can download it
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Flet-Android-APK
+          path: build/apk/app-release.apk
