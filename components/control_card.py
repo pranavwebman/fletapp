@@ -56,7 +56,7 @@ class ControlCard(ft.Container):
             border_radius=22,
             bgcolor=self.control.color if self.control.state else ft.Colors.SURFACE_CONTAINER_HIGHEST,
             alignment=ft.Alignment.CENTER,
-            animate=ft.animation.Animation(300, ft.AnimationCurve.EASE_IN_OUT)
+            animate=ft.Animation(300, ft.AnimationCurve.EASE_IN_OUT)
         )
 
         self.state_badge = ft.Container(
@@ -88,7 +88,7 @@ class ControlCard(ft.Container):
                 color=ft.Colors.with_opacity(0.08, ft.Colors.BLACK),
                 offset=ft.Offset(0, 2)
             ),
-            animate=ft.animation.Animation(200, ft.AnimationCurve.EASE_IN_OUT),
+            animate=ft.Animation(200, ft.AnimationCurve.EASE_IN_OUT),
             ink=not self.is_edit_mode,
             on_click=self._handle_card_tap if not self.is_edit_mode else None
         )
