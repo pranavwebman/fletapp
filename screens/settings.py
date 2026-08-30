@@ -16,7 +16,6 @@ class SettingsScreen(ft.Container):
         self.user_name_field = ft.TextField(
             label="Your Name",
             value=self.storage.config.user_name,
-            density=ft.ThemeVisualDensity.COMPACT,
             on_change=self._on_user_name_change
         )
 
@@ -47,8 +46,7 @@ class SettingsScreen(ft.Container):
             hint_text="Paste configuration JSON here to import...",
             multiline=True,
             min_lines=4,
-            max_lines=6,
-            density=ft.ThemeVisualDensity.COMPACT
+            max_lines=6
         )
 
         super().__init__(
@@ -64,6 +62,15 @@ class SettingsScreen(ft.Container):
                     ft.Container(height=12),
                     self._build_section("Default Behavior", [
                         self.confirm_switch
+                    ]),
+                    ft.Container(height=12),
+                    self._build_section("Manage Categories", [
+                        ft.ElevatedButton(
+                            "Add New Category",
+                            icon=ft.Icons.ADD,
+                            on_click=self._open_add_category_dialog
+                        ),
+                        self._build_categories_list()
                     ]),
                     ft.Container(height=12),
                     self._build_section("Data Management (Backup & Restore)", [
@@ -133,8 +140,107 @@ class SettingsScreen(ft.Container):
             padding=16,
             border_radius=12,
             bgcolor=ft.Colors.SURFACE_CONTAINER_LOW,
-            border=ft.border.all(1, ft.Colors.OUTLINE_VARIANT)
+            border=ft.Border.all(1, ft.Colors.OUTLINE_VARIANT)
         )
+
+    def _build_categories_list(self) -> ft.Control:
+        categories = self.storage.get_categories()
+        cat_rows = []
+        for cat in categories:
+            if cat.id == "all":
+                continue
+
+            icon_attr = getattr(ft.Icons, cat.icon.upper(), ft.Icons.FOLDER)
+            row = ft.Row(
+                controls=[
+                    ft.Icon(icon_attr, size=20, color=ft.Colors.PRIMARY),
+                    ft.Text(cat.name, size=14, weight=ft.FontWeight.W_500, expand=True),
+                    ft.IconButton(
+                        ft.Icons.EDIT_OUTLINED,
+                        icon_size=18,
+                        on_click=lambda e, c=cat: self._open_edit_category_dialog(c)
+                    ),
+                    ft.IconButton(
+                        ft.Icons.DELETE_OUTLINED,
+                        icon_size=18,
+                        icon_color=ft.Colors.RED,
+                        on_click=lambda e, c=cat: self._delete_category(c)
+                    )
+                ],
+                alignment=ft.MainAxisAlignment.SPACE_BETWEEN
+            )
+            cat_rows.append(row)
+        return ft.Column(controls=cat_rows, spacing=4)
+
+    def _open_add_category_dialog(self, e):
+        name_field = ft.TextField(label="Category Name *", hint_text="e.g. Garden")
+
+        def _save(e):
+            n = name_field.value.strip()
+            if not n:
+                show_snackbar(self.page_ref, "Category name is required.", is_error=True)
+                return
+            from models.category import Category
+            new_cat = Category(name=n, icon="folder", order=len(self.storage.get_categories()))
+            self.storage.add_category(new_cat)
+            dialog.open = False
+            self.page_ref.update()
+            self.update()
+            show_snackbar(self.page_ref, f"Added category '{n}'")
+
+        dialog = ft.AlertDialog(
+            title=ft.Text("Add Category", weight=ft.FontWeight.BOLD),
+            content=ft.Container(content=name_field, width=280),
+            actions=[
+                ft.TextButton("Cancel", on_click=lambda e: setattr(dialog, "open", False) or self.page_ref.update()),
+                ft.ElevatedButton("Save", on_click=_save)
+            ]
+        )
+        self.page_ref.dialog = dialog
+        dialog.open = True
+        self.page_ref.update()
+
+    def _open_edit_category_dialog(self, cat):
+        name_field = ft.TextField(label="Category Name *", value=cat.name)
+
+        def _save(e):
+            n = name_field.value.strip()
+            if not n:
+                show_snackbar(self.page_ref, "Category name is required.", is_error=True)
+                return
+            cat.name = n
+            self.storage.update_category(cat)
+            dialog.open = False
+            self.page_ref.update()
+            self.update()
+            show_snackbar(self.page_ref, f"Renamed category to '{n}'")
+
+        dialog = ft.AlertDialog(
+            title=ft.Text("Edit Category", weight=ft.FontWeight.BOLD),
+            content=ft.Container(content=name_field, width=280),
+            actions=[
+                ft.TextButton("Cancel", on_click=lambda e: setattr(dialog, "open", False) or self.page_ref.update()),
+                ft.ElevatedButton("Save", on_click=_save)
+            ]
+        )
+        self.page_ref.dialog = dialog
+        dialog.open = True
+        self.page_ref.update()
+
+    def _delete_category(self, cat):
+        show_confirm_dialog(
+            self.page_ref,
+            title=f"Delete '{cat.name}'?",
+            message="Controls in this category will be moved to 'All'.",
+            confirm_label="Delete",
+            confirm_color=ft.Colors.RED,
+            on_confirm=lambda: self._do_delete_category(cat.id)
+        )
+
+    def _do_delete_category(self, cat_id: str):
+        self.storage.delete_category(cat_id)
+        self.update()
+        show_snackbar(self.page_ref, "Category deleted.")
 
     def _on_user_name_change(self, e):
         self.storage.config.user_name = e.control.value.strip() or "User"

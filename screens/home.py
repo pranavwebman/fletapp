@@ -26,9 +26,8 @@ class HomeScreen(ft.Container):
         self.search_field = ft.TextField(
             hint_text="Search controls or devices...",
             prefix_icon=ft.Icons.SEARCH,
-            density=ft.ThemeVisualDensity.COMPACT,
             border_radius=24,
-            content_padding=ft.padding.symmetric(horizontal=16, vertical=8),
+            content_padding=ft.Padding.symmetric(horizontal=16, vertical=8),
             on_change=self._on_search_change,
             expand=True
         )
@@ -40,7 +39,7 @@ class HomeScreen(ft.Container):
             spacing=12,
             run_spacing=12,
             expand=False,
-            padding=ft.padding.only(bottom=80)
+            padding=ft.Padding.only(bottom=80)
         )
 
         # Empty state container
@@ -67,7 +66,7 @@ class HomeScreen(ft.Container):
                 spacing=8
             ),
             padding=30,
-            alignment=ft.alignment.center,
+            alignment=ft.Alignment.CENTER,
             visible=False
         )
 
@@ -168,10 +167,10 @@ class HomeScreen(ft.Container):
                     spacing=6,
                     tight=True
                 ),
-                padding=ft.padding.symmetric(horizontal=12, vertical=8),
+                padding=ft.Padding.symmetric(horizontal=12, vertical=8),
                 border_radius=20,
                 bgcolor=ft.Colors.PRIMARY_CONTAINER if is_selected else ft.Colors.SURFACE_CONTAINER_HIGHEST,
-                border=ft.border.all(1, ft.Colors.PRIMARY if is_selected else ft.Colors.TRANSPARENT),
+                border=ft.Border.all(1, ft.Colors.PRIMARY if is_selected else ft.Colors.TRANSPARENT),
                 ink=True,
                 on_click=lambda e, cid=cat.id: self._select_category(cid)
             )
@@ -205,8 +204,10 @@ class HomeScreen(ft.Container):
                 )
                 self.controls_grid.controls.append(card)
 
-        if self.page_ref:
+        try:
             self.update()
+        except Exception:
+            pass
 
     def _handle_state_change(self, control: Control):
         self.storage.update_control(control)

@@ -36,7 +36,7 @@ class DevicesScreen(ft.Container):
                 spacing=8
             ),
             padding=30,
-            alignment=ft.alignment.center,
+            alignment=ft.Alignment.CENTER,
             visible=False
         )
 
@@ -92,8 +92,10 @@ class DevicesScreen(ft.Container):
                 card = self._build_device_card(dev)
                 self.devices_list.controls.append(card)
 
-        if self.page_ref:
+        try:
             self.update()
+        except Exception:
+            pass
 
     def _build_device_card(self, device: Device) -> ft.Control:
         return ft.Container(
@@ -105,7 +107,7 @@ class DevicesScreen(ft.Container):
                                 content=ft.Icon(ft.Icons.MEMORY, size=24, color=ft.Colors.PRIMARY),
                                 width=40, height=40, border_radius=20,
                                 bgcolor=ft.Colors.PRIMARY_CONTAINER,
-                                alignment=ft.alignment.center
+                                alignment=ft.Alignment.CENTER
                             ),
                             ft.Column(
                                 controls=[
@@ -148,7 +150,7 @@ class DevicesScreen(ft.Container):
             padding=12,
             border_radius=12,
             bgcolor=ft.Colors.SURFACE_CONTAINER_LOW,
-            border=ft.border.all(1, ft.Colors.OUTLINE_VARIANT)
+            border=ft.Border.all(1, ft.Colors.OUTLINE_VARIANT)
         )
 
     def _open_device_dialog(self, device: Device = None):
@@ -157,29 +159,25 @@ class DevicesScreen(ft.Container):
         name_field = ft.TextField(
             label="Device Name *",
             value=device.name if device else "",
-            hint_text="e.g. Living Room ESP32",
-            density=ft.ThemeVisualDensity.COMPACT
+            hint_text="e.g. Living Room ESP32"
         )
 
         host_field = ft.TextField(
             label="Host / IP Address *",
             value=device.host if device else "",
-            hint_text="192.168.1.42 or esp32.local",
-            density=ft.ThemeVisualDensity.COMPACT
+            hint_text="192.168.1.42 or esp32.local"
         )
 
         port_field = ft.TextField(
             label="Port",
             value=str(device.port) if device else "80",
-            keyboard_type=ft.KeyboardType.NUMBER,
-            density=ft.ThemeVisualDensity.COMPACT
+            keyboard_type=ft.KeyboardType.NUMBER
         )
 
         desc_field = ft.TextField(
             label="Description",
             value=device.description if device else "",
-            hint_text="e.g. Controls ceiling fan and main light",
-            density=ft.ThemeVisualDensity.COMPACT
+            hint_text="e.g. Controls ceiling fan and main light"
         )
 
         def _save_device(e):

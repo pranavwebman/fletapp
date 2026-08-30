@@ -22,8 +22,8 @@ class ColorPicker(ft.Container):
                 height=36,
                 border_radius=18,
                 bgcolor=hex_code,
-                alignment=ft.alignment.center,
-                border=ft.border.all(2, ft.Colors.PRIMARY if is_selected else ft.Colors.TRANSPARENT),
+                alignment=ft.Alignment.CENTER,
+                border=ft.Border.all(2, ft.Colors.PRIMARY if is_selected else ft.Colors.TRANSPARENT),
                 content=ft.Icon(
                     ft.Icons.CHECK,
                     size=18,

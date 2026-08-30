@@ -55,8 +55,8 @@ class ControlCard(ft.Container):
             height=44,
             border_radius=22,
             bgcolor=self.control.color if self.control.state else ft.Colors.SURFACE_CONTAINER_HIGHEST,
-            alignment=ft.alignment.center,
-            animate=ft.animation.Animation(300, ft.AnimationCurve.EASE_IN_OUT)
+            alignment=ft.Alignment.CENTER,
+            animate=ft.Animation(300, ft.AnimationCurve.EASE_IN_OUT)
         )
 
         self.state_badge = ft.Container(
@@ -66,7 +66,7 @@ class ControlCard(ft.Container):
                 weight=ft.FontWeight.BOLD,
                 color=ft.Colors.WHITE if self.control.state else ft.Colors.ON_SURFACE_VARIANT
             ),
-            padding=ft.padding.symmetric(horizontal=8, vertical=2),
+            padding=ft.Padding.symmetric(horizontal=8, vertical=2),
             border_radius=10,
             bgcolor=self.control.color if self.control.state else ft.Colors.SURFACE_CONTAINER_HIGHEST
         )
@@ -81,14 +81,14 @@ class ControlCard(ft.Container):
             padding=12,
             border_radius=16,
             bgcolor=ft.Colors.SURFACE_CONTAINER_LOW,
-            border=ft.border.all(1.5, self.control.color if self.control.state else ft.Colors.OUTLINE_VARIANT),
+            border=ft.Border.all(1.5, self.control.color if self.control.state else ft.Colors.OUTLINE_VARIANT),
             shadow=ft.BoxShadow(
                 blur_radius=8,
                 spread_radius=1,
                 color=ft.Colors.with_opacity(0.08, ft.Colors.BLACK),
                 offset=ft.Offset(0, 2)
             ),
-            animate=ft.animation.Animation(200, ft.AnimationCurve.EASE_IN_OUT),
+            animate=ft.Animation(200, ft.AnimationCurve.EASE_IN_OUT),
             ink=not self.is_edit_mode,
             on_click=self._handle_card_tap if not self.is_edit_mode else None
         )
@@ -169,7 +169,7 @@ class ControlCard(ft.Container):
                         self.icon_box,
                         ft.Container(
                             content=self.loader if self.is_loading else self.state_badge,
-                            alignment=ft.alignment.center_right
+                            alignment=ft.Alignment.CENTER_RIGHT
                         )
                     ],
                     alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
@@ -244,4 +244,4 @@ class ControlCard(ft.Container):
         self.state_badge.bgcolor = self.control.color if self.control.state else ft.Colors.SURFACE_CONTAINER_HIGHEST
         self.state_badge.content.value = self._get_state_label()
         self.state_badge.content.color = ft.Colors.WHITE if self.control.state else ft.Colors.ON_SURFACE_VARIANT
-        self.border = ft.border.all(1.5, self.control.color if self.control.state else ft.Colors.OUTLINE_VARIANT)
+        self.border = ft.Border.all(1.5, self.control.color if self.control.state else ft.Colors.OUTLINE_VARIANT)
