@@ -9,7 +9,6 @@ class IconPicker(ft.AlertDialog):
         self.search_field = ft.TextField(
             hint_text="Search icons...",
             prefix_icon=ft.Icons.SEARCH,
-            density=ft.ThemeVisualDensity.COMPACT,
             on_change=self._filter_icons,
             expand=True
         )

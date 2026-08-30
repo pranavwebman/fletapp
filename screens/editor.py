@@ -29,78 +29,68 @@ class EditorScreen(ft.Container):
         self.name_field = ft.TextField(
             label="Control Name *",
             value=control_to_edit.name if control_to_edit else "",
-            hint_text="e.g. Bedroom Light",
-            density=ft.ThemeVisualDensity.COMPACT
+            hint_text="e.g. Bedroom Light"
         )
 
         self.control_type_dropdown = ft.Dropdown(
             label="Control Type",
             value=control_to_edit.control_type if control_to_edit else Control.TYPE_ACTION,
             options=[ft.dropdown.Option(item["value"], item["label"]) for item in CONTROL_TYPES],
-            density=ft.ThemeVisualDensity.COMPACT,
-            on_change=self._on_type_change
+            on_select=self._on_type_change
         )
 
         self.device_dropdown = ft.Dropdown(
             label="Target Device",
             value=self.selected_device_id if self.selected_device_id else "custom",
             options=self._get_device_options(),
-            density=ft.ThemeVisualDensity.COMPACT,
-            on_change=self._on_device_change
+            on_select=self._on_device_change
         )
 
         self.custom_url_field = ft.TextField(
             label="Custom Base URL (Optional)",
             value=control_to_edit.custom_url if control_to_edit else "",
             hint_text="http://192.168.1.100:8080",
-            density=ft.ThemeVisualDensity.COMPACT,
             visible=(self.selected_device_id == "" or self.selected_device_id == "custom")
         )
 
         self.on_endpoint_field = ft.TextField(
             label="ON / Action Endpoint *",
             value=control_to_edit.on_endpoint if control_to_edit else "/on",
-            hint_text="/on or /relay/1/on",
-            density=ft.ThemeVisualDensity.COMPACT
+            hint_text="/on or /relay/1/on"
         )
 
         self.off_endpoint_field = ft.TextField(
             label="OFF Endpoint",
             value=control_to_edit.off_endpoint if control_to_edit else "/off",
             hint_text="/off",
-            density=ft.ThemeVisualDensity.COMPACT,
             visible=(self.control_type_dropdown.value == Control.TYPE_TOGGLE)
         )
 
         self.http_method_dropdown = ft.Dropdown(
             label="HTTP Method",
             value=control_to_edit.http_method if control_to_edit else "GET",
-            options=[ft.dropdown.Option(m) for m in HTTP_METHODS],
-            density=ft.ThemeVisualDensity.COMPACT
+            options=[ft.dropdown.Option(m) for m in HTTP_METHODS]
         )
 
         self.category_dropdown = ft.Dropdown(
             label="Category",
             value=self.selected_category_id,
-            options=[ft.dropdown.Option(c.id, c.name) for c in self.storage.get_categories()],
-            density=ft.ThemeVisualDensity.COMPACT
+            options=[ft.dropdown.Option(c.id, c.name) for c in self.storage.get_categories()]
         )
 
         self.timeout_field = ft.TextField(
             label="Timeout (seconds)",
             value=str(control_to_edit.timeout) if control_to_edit else "5",
-            keyboard_type=ft.KeyboardType.NUMBER,
-            density=ft.ThemeVisualDensity.COMPACT
+            keyboard_type=ft.KeyboardType.NUMBER
         )
 
         self.headers_field = ft.TextField(
             label="Custom Headers (JSON format)",
-            value=str(control_to_edit.custom_headers) if (control_to_edit and control_to_edit.custom_headers) else "",
+            value=json.dumps(control_to_edit.custom_headers) if (control_to_edit and control_to_edit.custom_headers) else "",
             hint_text='{"Authorization": "Bearer token"}',
             multiline=True,
             min_lines=2,
-            max_lines=3,
-            density=ft.ThemeVisualDensity.COMPACT
+            max_lines=3
         )
 
         self.body_field = ft.TextField(
@@ -109,8 +99,7 @@ class EditorScreen(ft.Container):
             hint_text='{"state": "ON"}',
             multiline=True,
             min_lines=2,
-            max_lines=3,
-            density=ft.ThemeVisualDensity.COMPACT
+            max_lines=3
         )
 
         self.confirm_switch = ft.Switch(
@@ -230,7 +219,7 @@ class EditorScreen(ft.Container):
             padding=16,
             border_radius=12,
             bgcolor=ft.Colors.SURFACE_CONTAINER_LOW,
-            border=ft.border.all(1, ft.Colors.OUTLINE_VARIANT)
+            border=ft.Border.all(1, ft.Colors.OUTLINE_VARIANT)
         )
 
     def _build_test_section(self) -> ft.Control:
@@ -263,7 +252,7 @@ class EditorScreen(ft.Container):
             padding=16,
             border_radius=12,
             bgcolor=ft.Colors.SURFACE_CONTAINER_LOW,
-            border=ft.border.all(1, ft.Colors.OUTLINE_VARIANT)
+            border=ft.Border.all(1, ft.Colors.OUTLINE_VARIANT)
         )
 
     def _handle_test_endpoint(self, e):
